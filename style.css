@@ -1,1 +1,74 @@
+.is-hide {
+    display: none;
+}
 
+.fadeout-bg {
+    transition-property: opacity;
+    transition-delay: .9s;
+    transition-duration: .8s;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.fadeout-loader {
+    transition-property: opacity;
+    transition-delay: .9s;
+    transition-duration: .3s;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#loader-bg {
+    background: #ffffff;
+    height: 100%;
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+}
+
+#loader {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+#loader p {
+    color: #454545;
+    text-align: center;
+}
+
+#loader p img {
+    display: inline-block;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+canvas {
+    background-color: #eee;
+    /*             display: block; */
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+#Judge {
+    color: rgb(0, 174, 255);
+}
+
+#contents {
+    text-align: center;
+}
+
+#fileName {
+    text-align: center;
+}
