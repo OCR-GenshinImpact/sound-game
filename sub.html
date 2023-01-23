@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .is-hide {
+            display: none;
+        }
+
+        .fadeout-bg {
+            transition-property: opacity;
+            transition-delay: .9s;
+            transition-duration: .8s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .fadeout-loader {
+            transition-property: opacity;
+            transition-delay: .9s;
+            transition-duration: .3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #loader-bg {
+            background: #ffffff;
+            height: 100%;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+        }
+
+        #loader {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            margin: auto;
+        }
+
+        #loader p {
+            color: #454545;
+            text-align: center;
+        }
+
+        #loader p img {
+            display: inline-block;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        canvas {
+            background-color: #eee;
+            /*             display: block; */
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="is-hide" id="loader-bg">
+        <div class="is-hide" id="loader">
+            <p>
+                <img src="./竹ニョキ.gif" alt="Loading-GIFImage" width="600" height="337"><br>
+                <!--600,337-->
+            <h2>"NOW LOADING"</h2>
+            </p>
+        </div>
+    </div>
+    <div id="contents">
+        <!--最大同時認識キー数はキーボード等スペック次第-->
+        <input onclick="musicControl()" id="Button" value="再生" type="button">
+        曲<select id="fileName">
+            <option value="0"></option>
+            <option value="1">Don’t Fight The Music</option>
+            <option value="2">the EmpErroR</option>
+            <option value="3">ヒビカセ</option>
+            <option value="4">マシンガンポエムドール</option>
+            <option value="5">脳漿炸裂ガール</option>
+            <option value="6">竹</option>
+        </select>
+        ノーツ速度:<input type="number" value="6.0" max="12.0" min="1.0" id="Speed" step="0.1">
+        <div id="wrapper">
+            <canvas id="myCanvas" width="935.811" height="674.646">お使いのブラウザではCanvasがサポートされていません</canvas>
+        </div>
+    </div>
+    <button onclick="outputJSON()">JSONファイル出力</button>
+    <h1>遷移先画面</h1>
+    <script>
+        let bg = document.getElementById('loader-bg'), loader = document.getElementById('loader');
+        bg.classList.remove('is-hide');
+        loader.classList.remove('is-hide');
+        window.addEventListener("load", endLoad, false);
+        function endLoad() {
+            setTimeout(() => {
+                bg.classList.add('fadeout-bg');
+                loader.classList.add('fadeout-loader');
+            }, 1500)
+        }
+        let music = 0, filePath, FileOption, FileName, Path = [], scrollTime = 0;
+        FileName = document.getElementById("fileName");
+        Path = FileName.innerText.split('\n');
+        let buttonText = document.getElementById("Button");
+        let adjSpeed = document.getElementById("Speed");
+        const alphabet = ['A', 'S', 'D', 'J', 'K', 'L'];
+        window.addEventListener('DOMContentLoaded', function () {
+            adjSpeed.addEventListener('change', speedchange, false);
+            FileName.addEventListener('change', selectStatus, false);
+            function selectStatus() {
+                JSONDraw();
+                if (musicInterval != 0) {
+                    music.pause();
+                    notesSpeed = 0;
+                    clearTimeout(musicInterval);
+                    musicInterval = 0;
+                    buttonText.value = '再生';
+                }
+                for (let i = 0; i < FileName.length; i++) {
+                    if (FileName[i].selected) {
+                        FileOption = FileName[i].value;
+                        if (FileOption != 0) {
+                            Status.Option = 'selected';
+                            filePath = './Music/' + Path[FileOption - 1] + '.mp3';
+                            music = new Audio(filePath);
+                            music.load();
+                        } else {
+                            Status.Option = 0;
+                        }
+                    }
+                }
+            }
+        });
+        const canvas = document.getElementById("myCanvas");
+        const ctx = document.getElementById("myCanvas").getContext("2d");
+        ctx.textBaseline = "hanging";
+        ctx.font = "30px 'MS PGothic', san-serif";
+        let notesWidth = canvas.width / 6;
+        let splitWidth = 2;
+        let notesHeight = canvas.height / 50;
+        let x_Notes = canvas.width - notesWidth;
+        let SubnotesSpeed = canvas.height / 400 * adjSpeed.value / 6.0;//100
+        let notesSpeed = 0;
+        let musicInterval = 0;
+        let Status = { Option: 0, Music: 0 }
+        let stan = 0;
+        let LinePositionData = 0
+        let LinePositionNumber = 0
+        let FullCondition = 0;
+        let virtualCanvasHeight;
+        let sheetData = {
+            id: 'sheet',
+            name: 'Sheet-Data',
+            music: '',
+            sheet: LinePositionData
+        };
+        let one, two, three, four, five, six;
+        function outputJSON() {
+            var JSONFileName = "sheet_maked.json";
+            var sheet_data = JSON.stringify(sheetData);
+            var link = document.createElement("a");
+            link.href = "data:text/plain, " + encodeURIComponent(sheet_data);
+            link.download = JSONFileName;
+            link.click();
+        }
+        function speedchange() {
+            SubnotesSpeed = canvas.height / 400 * adjSpeed.value / 6.0;
+            if (musicInterval != 0) {
+                music.pause();
+                notesSpeed = 0;
+                music.currentTime = 0
+                clearTimeout(musicInterval);
+                musicInterval = 0;
+                buttonText.value = '再生';
+            }
+        }
+        function drawSetLine() {
+            ctx.beginPath();
+            ctx.fillStyle = 'rgb(0, 0, 0)';
+            ctx.fill();
+            ctx.closePath();
+        }
+        function draw() {
+            ctx.beginPath();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.rect(0, canvas.height * 0.9, canvas.width, notesHeight / 3);
+            ctx.fillStyle = 'rgb(15, 89, 255)';
+            ctx.fill();
+            ctx.closePath();
+        };
+        setInterval(draw, 5);
+    </script>
+</body>
+
+</html>

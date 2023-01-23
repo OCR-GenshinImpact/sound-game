@@ -8,7 +8,7 @@ function endLoad() {
         loader.classList.add('fadeout-loader');
     }, 1500)
 }
-let music = 0, time = 0, filePath, FileOption, FileName, Path = [];
+let music = 0, filePath, FileOption, FileName, Path = [];
 FileName = document.getElementById("fileName");
 Path = FileName.innerText.split('\n');
 let buttonText = document.getElementById("Button");
@@ -54,8 +54,6 @@ let SubnotesSpeed = canvas.height / 400 * adjSpeed.value / 6.0;//100
 let notesSpeed = 0;
 let musicInterval = 0;
 let Status = { Option: 0, Music: 0 }
-let nowTime = 0;
-let pt = 0;
 let stan = 0;
 let LinePositionData = 0
 let LinePositionNumber = 0
@@ -214,7 +212,7 @@ function splitCanvas() {
     for (var l = 1; l < 6; l++) {
         ctx.rect(notesWidth * l - splitWidth / 2, 0, splitWidth, canvas.height);
     }
-    ctx.fillStyle = ctx.fillStyle = 'rgb(0, 0, 0)';
+    ctx.fillStyle = 'rgb(0, 0, 0)';
     ctx.fill();
     ctx.closePath();
 }
