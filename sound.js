@@ -202,7 +202,7 @@ function musicControl() {
 }*/
 function drawJudgeline() {
     ctx.beginPath();
-    ctx.rect(0, canvas.height * 0.9, canvas.width, notesHeight / 3);
+    ctx.rect(0, 0+canvas.height * 0.9, canvas.width, notesHeight / 3);
     ctx.fillStyle = 'rgb(15, 89, 255)';
     ctx.fill();
     ctx.closePath();
